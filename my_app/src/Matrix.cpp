@@ -1525,6 +1525,72 @@ Matrix eigenVal(const Matrix& A, double tol)
 
 
 ///////////// ********* Gaussian Elimination ************ ////////////////////////
+Matrix forwardSub(const Matrix& L, const Matrix& c)
+{
+  int m = L.mRow;
+  Vector y(m);
+  for (int i = 0; i < m; i++)
+  {
+    double temp = c.getValue(i,0);
+    for (int j = 0; j < i-1; j++)
+    {
+      temp -= L.getValue(i,j) * y.getValue(j);
+    }
+    y.setValue(temp/L.getValue(i,i),i);
+  }
+  return y;
+}
+
+Matrix backwardSub(const Matrix& U, const Matrix& b)
+{
+  int m = U.mRow;
+  Vector x(m);
+  for (int i = m-1; i >= 0; i--)
+  {
+    double temp = b.getValue(i,0);
+    for (int j = i+1; j < m; j++)
+    {
+      temp -= U.getValue(i,j) * x.getValue(j);
+    }
+    x.setValue(temp/U.getValue(i,i),i);
+  }
+  return x;
+}
+
+// LU Solver
+Matrix solverLU(const Matrix& A, const Matrix& b)
+{
+    // Check if A is singular
+  if (fabs(det(A)) < 1e-10)
+  {
+    throw Exception("solverLU - No solutions","Matrix is singular");
+  }
+  // Check if A is square
+  if (A.mCol > A.mRow)
+  {
+    throw Exception("solverLU - Underdetermined", "Cannot find a solution");
+  }
+  // Check if b is a vector
+  if (b.mCol != 1)
+  {
+    throw Exception("solverLU - b has more than one column",
+                           "Enter b as vector or one column matrix");
+  }
+  // Declare matrices
+  Matrix P(A.mRow); Matrix L(A.mRow); Matrix U(A.mRow); int swaps;
+  // get LU decomposition
+  std::tie(P,L,U,swaps) = lu(A);
+  
+  // Get forward sub
+  Vector y(b.mRow);
+  y = forwardSub(L,P*b);
+
+  Vector x(b.mRow);
+  x = backwardSub(U,y);
+  return x;
+}
+
+
 Matrix gaussianElimination(const Matrix& A, const Matrix& b)
 {
   /** @brief Solves full-rank square system Ax = b
@@ -1533,7 +1599,6 @@ Matrix gaussianElimination(const Matrix& A, const Matrix& b)
    *  @param b vector of the linear system
    *  @return vector x: solution to the linear system
    */
-
 
   // Check if A is singular
   if (fabs(det(A)) < 1e-10)
