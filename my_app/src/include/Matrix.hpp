@@ -116,8 +116,11 @@ public:
 
    //////// --------- Linear Algebra Algorithms ---------- //////////
    
+   friend Matrix forwardSub(const Matrix& L, const Matrix& c);
+   friend Matrix backwardSub(const Matrix& U, const Matrix& b);
    // Gaussian elimination solver
-   friend Matrix gaussianElimination(const Matrix& A_orig, const Matrix& b);;
+   friend Matrix gaussianElimination(const Matrix& A, const Matrix& b);
+   friend Matrix solverLU(const Matrix& A, const Matrix& b);
    // LU Decomposition
    friend std::tuple<Matrix, Matrix, Matrix, int> lu(const Matrix& A);
    // Determinant
@@ -150,13 +153,13 @@ Matrix operator/(const Matrix& m, const double& a);
 double dot(const Matrix& m1, const Matrix& m2);
 
 // Solver
-Matrix gaussianElimination(const Matrix& A_orig, const Matrix& b);
-Matrix cgs(const Matrix& A, const Matrix& b);
-Matrix operator/(const Matrix& m1, const Matrix& m2);
+Matrix gaussianElimination(const Matrix& A, const Matrix& b);
+Matrix solverLU(const Matrix& A, const Matrix& b);
 
 // LU Decomposition
 std::tuple <Matrix, Matrix, Matrix, int> lu(const Matrix& A);
-
+Matrix forwardSub(const Matrix& L, const Matrix& c);
+Matrix backwardSub(const Matrix& U, const Matrix& b);
 // QR
 std::tuple <Matrix, Matrix> qr(const Matrix& A, bool reduced);
 // Least-squares
