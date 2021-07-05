@@ -1,4 +1,7 @@
 # Cplusplus
-C++ plus work for scientific computing.
+C++ report and complimentary files for the Special topic
 
-Contains to solutions to practical sheets on the C++ course for scientific computing.
+Contains:
+* Report: CandidateNumber.pdf
+* Code: my_app folder
+* Class documentation: ref.pdf
